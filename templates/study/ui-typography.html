@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circular Image Upload</title>
+    <style>
+    </style>
+</head>
+
+<body>
+
+    <style type="text/css">
+        .unique-file-upload-container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            margin: auto;
+            width: 80%;
+        }
+
+        .unique-file-drop-area {
+            border: 2px dashed #87CEEB;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: border 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .unique-file-upload {
+            display: none;
+        }
+
+        .unique-file-list {
+            text-align: left;
+            max-height: 100px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .unique-submit-button {
+            background-color: #87CEEB;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .unique-submit-button:hover {
+            background-color: #5f9ea0;
+        }
+
+        .unique-file-name {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .unique-custom-icon {
+            width: 128px;
+            height: 128px;
+            background-image: url('/static/assets/images/layouts/mydrive/background.png');
+            background-size: cover;
+            animation: moveIcon 2s linear infinite alternate;
+        }
+
+        @keyframes moveIcon {
+            from {
+                margin-left: 0;
+            }
+
+            to {
+                margin-left: 20px;
+            }
+        }
+
+        .unique-upload-arrow {
+            font-size: 36px;
+            transition: transform 0.3s ease;
+            color: #87CEEB;
+        }
+
+        .unique-file-drop-area:hover .unique-upload-arrow {
+            transform: rotate(-45deg);
+        }
+
+        .unique-file-drop-area.clicked {
+            border-color: #5f9ea0;
+        }
+
+        .custom-upload-container {
+            text-align: center;
+        }
+
+        .custom-upload-input {
+            display: none;
+        }
+
+        .custom-upload-label {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .custom-upload-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+
+        .custom-upload-label::after {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+
+    <div class="custom-upload-container">
+        <label class="custom-upload-label" for="customFileInput">
+            <div class="custom-upload-image" id="customImagePreview"></div>
+        </label>
+        <input type="file" id="customFileInput" class="custom-upload-input" accept="image/*"
+            onchange="handleCustomFile(this.files)">
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <script>
+                // ... (unchanged JavaScript code)
+            </script>
+
+            <div class="col-lg-12">
+                <div class="card card-block card-stretch card-height iq-welcome"
+                    style="background: no-repeat scroll right center; background-color: #ffffff; background-size: contain;">
+                    <div class="card-body property2-content">
+                        <div class="d-flex flex-wrap align-items-center">
+                            <div class="col-lg-12">
+                                <h3 class="mb-3">Welcome Drop&Share</h3>
+
+                                <div class="unique-file-upload-container">
+                                    <div class="unique-file-drop-area" ondrop="handleDrop(event)"
+                                        ondragover="handleDragOver(event)" onclick="openFileUpload()">
+                                        <div class="unique-custom-icon"></div>
+                                        <div class="unique-upload-arrow">➜</div>
+                                        <p>Click or drag and drop a file</p>
+                                        <input type="file" class="unique-file-upload" onchange="handleFile(this.files)">
+                                    </div>
+
+                                    <div class="unique-file-list"></div>
+                                    <div class="unique-file-name"></div>
+                                    <button class="unique-submit-button" onclick="submitFile()">Submit</button>
+
+                                    <!-- Date Expiry input and Password input in the same row -->
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="floating-label form-group">
+                                                <label for="fileExpiryDate">Expiry date</label>
+                                                <input class="floating-input form-control" type="date"
+                                                    id="fileExpiryDate" name="fileExpiryDate" max="2030-01-05">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="floating-label form-group">
+                                                <label for="password">Password</label>
+                                                <input class="floating-input form-control" type="password"
+                                                    id="password" name="password">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ... (unchanged HTML code) -->
+
+        </div>
+    </div>
+
+</body>
+
+</html>

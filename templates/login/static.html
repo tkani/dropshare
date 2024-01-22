@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>CloudBOX | Responsive Bootstrap 4 Admin Dashboard Template</title>
+    <!-- ---------------------------------------------------------------------- Toaster css ------------------------------------ -->
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+<!-- -------------------------------- Kani Style sheet ------------------------------------- -->
+    <link rel="stylesheet" href="/static/assets/css/kani.css" />
+    <script src="/static/assets/js/kani.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/static/assets/images/favicon.ico" />
+
+    <link rel="stylesheet" href="/static/assets/css/backend-plugin.min.css" />
+    <link rel="stylesheet" href="/static/assets/css/backend.css?v=1.0.0" />
+
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/line-awesome/dist/line-awesome/css/line-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/remixicon/fonts/remixicon.css"
+    />
+
+    <!-- Viewer Plugin -->
+    <!--PDF-->
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/doc-viewer/include/pdf/pdf.viewer.css"
+    />
+    <!--Docs-->
+    <!--PPTX-->
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/doc-viewer/include/PPTXjs/css/pptxjs.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/doc-viewer/include/PPTXjs/css/nv.d3.min.css"
+    />
+    <!--All Spreadsheet -->
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/doc-viewer/include/SheetJS/handsontable.full.min.css"
+    />
+    <!--Image viewer-->
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/doc-viewer/include/verySimpleImageViewer/css/jquery.verySimpleImageViewer.css"
+    />
+    <!--officeToHtml-->
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/doc-viewer/include/officeToHtml/officeToHtml.css"
+    />
+  </head>
+  <body class=" ">
+    {% include 'include/messages.html' %}
+    <!-- loader Start -->
+    <div id="loading">
+      <div id="loading-center"></div>
+    </div>
+    <!-- loader END -->
+
+    <div class="wrapper">
+      <section class="login-content">
+        <div class="container h-100">
+          <div
+            class="row justify-content-center align-items-center height-self-center"
+          >
+            {% block body %} {% endblock %}
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Backend Bundle JavaScript -->
+    <script src="/static/assets/js/backend-bundle.min.js"></script>
+
+    <!-- Chart Custom JavaScript -->
+    <script src="/static/assets/js/customizer.js"></script>
+
+    <!-- Chart Custom JavaScript -->
+    <script src="/static/assets/js/chart-custom.js"></script>
+
+    <!--PDF-->
+    <script src="/static/assets/vendor/doc-viewer/include/pdf/pdf.js"></script>
+    <!--Docs-->
+    <script src="/static/assets/vendor/doc-viewer/include/docx/jszip-utils.js"></script>
+    <script src="/static/assets/vendor/doc-viewer/include/docx/mammoth.browser.min.js"></script>
+    <!--PPTX-->
+    <script src="/static/assets/vendor/doc-viewer/include/PPTXjs/js/filereader.js"></script>
+    <script src="/static/assets/vendor/doc-viewer/include/PPTXjs/js/d3.min.js"></script>
+    <script src="/static/assets/vendor/doc-viewer/include/PPTXjs/js/nv.d3.min.js"></script>
+    <script src="/static/assets/vendor/doc-viewer/include/PPTXjs/js/pptxjs.js"></script>
+    <script src="/static/assets/vendor/doc-viewer/include/PPTXjs/js/divs2slides.js"></script>
+    <!--All Spreadsheet -->
+    <script src="/static/assets/vendor/doc-viewer/include/SheetJS/handsontable.full.min.js"></script>
+    <script src="/static/assets/vendor/doc-viewer/include/SheetJS/xlsx.full.min.js"></script>
+    <!--Image viewer-->
+    <script src="/static/assets/vendor/doc-viewer/include/verySimpleImageViewer/js/jquery.verySimpleImageViewer.js"></script>
+    <!--officeToHtml-->
+    <script src="/static/assets/vendor/doc-viewer/include/officeToHtml/officeToHtml.js"></script>
+    <script src="/static/assets/js/doc-viewer.js"></script>
+    <!-- app JavaScript -->
+    <script src="/static/assets/js/app.js"></script>
+  </body>
+</html>

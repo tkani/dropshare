@@ -1,0 +1,1128 @@
+{% extends "user/static.html" %}
+{% load custom_filters %}
+ {% block body %}
+<div class="container-fluid">
+  <div class="row">
+      <script>
+        window.onload = function () {
+        
+        // Call the function to set the default "Expiry date"
+          setDefaultExpiryDate();
+
+      };
+
+          function handleDragOver(event) {
+              event.preventDefault();
+              event.dataTransfer.dropEffect = 'copy';
+              document.querySelector('.unique-file-drop-area').style.border = '2px dashed #5f9ea0'; /* Cadet Blue */
+          }
+      
+          function handleDrop(event) {
+              event.preventDefault();
+              document.querySelector('.unique-file-drop-area').style.border = '2px dashed #87CEEB'; /* Sky Blue */
+              const files = event.dataTransfer.files;
+              handleFile(files);
+          }
+      
+          function handleFile(files) {
+              const fileNames = Array.from(files).map(file => file.name);
+              const fileListDisplay = document.querySelector('.unique-file-list');
+              const fileNameDisplay = document.querySelector('.unique-file-name');
+      
+              fileListDisplay.innerHTML = fileNames.map(name => `<div>${name}</div>`).join('');
+      
+              if (files.length > 0) {
+                  const fileName = files[0].name;
+                  //fileNameDisplay.textContent = `Selected File: ${fileNames.join(', ')}`;
+              } else {
+                  fileNameDisplay.textContent = '';
+              }
+          }
+      
+          function openFileUpload() {
+              document.querySelector('.unique-file-upload').click();
+              document.querySelector('.unique-file-drop-area').classList.add('clicked');
+          }
+      
+          document.querySelector('.unique-file-upload').addEventListener('change', function () {
+              document.querySelector('.unique-file-drop-area').classList.remove('clicked');
+              handleFile(this.files);
+          });
+      
+          function submitFile() {
+              // Add your submission logic here
+              alert("File submitted!");
+          }
+
+          // Function to set the default value for the "Expiry date" input
+          function setDefaultExpiryDate() {
+              const currentDate = new Date();
+              currentDate.setDate(currentDate.getDate() + 90); // Adding 90 days
+              const formattedDate = currentDate.toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
+              document.getElementById('fileExpiryDate').value = formattedDate;
+              document.getElementById('fileExpiryDate').max = formattedDate; // Set max date to 90 days from today
+          }
+
+          function setExpiryDate(option) {
+            
+              const dateInput = document.getElementById('fileExpiryDate');
+              const todayDate = new Date().toISOString().split('T')[0];
+
+              switch (option) {
+                  case 'today':
+                      dateInput.value = todayDate;
+                      break;
+                  case 'tomorrow':
+                      const tomorrowDate = new Date();
+                      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+                      dateInput.value = tomorrowDate.toISOString().split('T')[0];
+                      break;
+                  case 'oneMonth':
+                      const oneMonthLater = new Date();
+                      oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+                      dateInput.value = oneMonthLater.toISOString().split('T')[0];
+                      break;
+                  case 'max':
+                      const maxmonth = new Date();
+                      maxmonth.setDate(maxmonth.getDate() + 90);
+                      dateInput.value = maxmonth.toISOString().split('T')[0];
+                      break;
+                      break;
+                  default:
+                      break;
+              }
+          }
+          </script>
+      
+      <div class="col-lg-12">
+        <!-- {{response_folder_data}} -->
+
+        {% if response_folder_data.folder_Data.0.folder_id != 0 %}
+
+        <div class="card card-block card-stretch card-height iq-welcome" style="background: no-repeat scroll right center; background-color: #ffffff; background-size: contain;">
+            <div class="card-body property2-content">
+                <div class="d-flex flex-wrap align-items-center">
+                    <div class="col-lg-12">
+                        <h3 class="mb-3">Welcome Drop&Share</h3>
+                        <form method="POST" action="" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="unique-file-upload-container">
+                            <div class="unique-file-drop-area" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" onclick="openFileUpload()">
+                                <div class="unique-custom-icon"></div>
+                                <div class="unique-upload-arrow">➜</div>
+                                <p>Click or drag and drop a file</p>
+                                <input type="file" id="files" name='files' class="unique-file-upload" onchange="handleFile(this.files)">
+                            </div>
+                            <div class="unique-file-list"></div>
+                            <div class="unique-file-name"></div>
+                            <div class="sign-user_card">
+                              <div class="row">
+                                <div class="col-lg-7">
+                                   <div class="floating-label form-group">
+                                      <div class="col-lg-12">
+                                        <input class="form-check-input" type="radio" id="todayradio" name="expiryOption" 
+                                                    onchange="setExpiryDate('today')"><label for="html">Today</label>
+                                        <input class="form-check-input ml-2" type="radio" id="tomorrowRadio" name="expiryOption" 
+                                                    onchange="setExpiryDate('tomorrow')"><label for="html" class="ml-4">Tomorrow</label>
+                                        <input class="form-check-input ml-2" type="radio" id="oneMonthRadio" name="expiryOption" 
+                                                    onchange="setExpiryDate('oneMonth')"><label for="html" class="ml-4">One Month</label>
+                                        <input class="form-check-input ml-2" type="radio" id="maxRadio" name="expiryOption" 
+                                                   checked onchange="setExpiryDate('max')"><label for="html" class="ml-4">Last Month</label>
+                                      </div>
+                                      <label>Expiry date</label>
+                                      <div class="col">
+                                        <input class="floating-input form-control" type="date" id="fileExpiryDate" name="fileExpiryDate" max="">
+                                      </div>
+                                   </div>
+                                 </div>
+                                <div class="col-lg-5">
+                                 
+                                   <div class="floating-label form-group">
+                                      <div class="col-lg-12">
+                                        <!-- <input class="form-check-input" type="radio" id="public" name="file_type" value='Public' checked><label for="html">Public</label> -->
+                                        <input class="form-check-input ml-2" type="radio" id="private" name="file_type" value='Private' checked ><label for="html" class="ml-4" >Private</label>
+                                        <!-- <input class="form-check-input ml-2" type="radio" id="protected" name="file_type" value='Protected'><label for="html" class="ml-4" >Protected</label> -->
+                                      </div>
+                                      <div class="floating-label form-group"></div>
+                                      <label>Password</label>
+                                      <input class="floating-input form-control" type="password" name="file_password" id="file_password" placeholder=" " value="" disabled>
+                                   </div>
+                                </div>
+                             </div>
+                           </div>
+                           <button type="button" class="unique-submit-button" onclick="startUpload()">Submit</button>
+                        </div>
+                      </form>
+                    </div>
+                </div>
+            </div> 
+        </div>
+        {% endif %}
+      </div>
+      <style type="text/css">
+        /* Add this style to your CSS */
+        #uploadProgressPopup {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #uploadProgressCircle {
+            border: 3px solid #fff;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+      </style>
+
+      <!-- <div id="uploadProgressBar" style="width: 0%; height: 10px; background-color: #4CAF50;"></div> -->
+      <div id="progressBar" style="width: 0%; background-color: lightblue; height: 20px; margin-top: 10px;"></div>
+
+    
+    <style type="text/css">
+        /* Add this style to your CSS */
+        #uploadProgressPopup {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #uploadProgressCircle {
+            border: 3px solid #fff;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+      </style>
+
+      <div id="uploadProgressBar" style="width: 0%; height: 10px; background-color: #4CAF50;"></div>
+
+    <script type="text/javascript">
+
+      function generateUniqueFileId() {
+        const timestamp = new Date().getTime();
+        const randomNumber = Math.floor(Math.random() * 1000);
+        return `file_${timestamp}_${randomNumber}`;
+    }
+
+      function startUpload() {
+        const fileInput = document.getElementById('files');
+        const expiry_date = document.getElementById('fileExpiryDate').value;
+        const password = document.getElementById('file_password').value;
+        var file_type = document.querySelector('input[name="file_type"]:checked').value;
+        const chunk_file_id = generateUniqueFileId();
+        const file = fileInput.files[0];
+
+        const url_link = "/api/data_house/";
+        var accessToken = "{{session}}";
+
+        if (!file) {
+            console.error('No file selected.');
+            return;
+        }
+        let tot_file_size = file.size;
+        var file_name = file.name;
+        const chunkSize = 1024 * 1024 * 20;  // 1 MB chunks
+        const totalChunks = Math.floor((file.size + (chunkSize)-1)/chunkSize);  // Assuming 2 MB chunks
+        console.log(totalChunks,file.size ,(file.size + (chunkSize)-1),((file.size + (chunkSize)-1)/chunkSize),chunkSize)
+        // const totalChunks = Math.ceil(file.size / (chunkSize));  // Assuming 2 MB chunks
+        let currentChunk = 0;
+
+        uploadChunk();
+
+        function uploadChunk() {
+        const chunk = file.slice(currentChunk * chunkSize, (currentChunk + 1) * chunkSize);
+        const formData = new FormData();
+        var folder_token = '{{folder_token}}'
+        formData.append('files', chunk);
+        formData.append('expiry_date', expiry_date);
+        formData.append('password', password);
+        formData.append('chunk_file_id', chunk_file_id);
+        formData.append('file_type', file_type);
+        formData.append('total_chunks', totalChunks);
+        formData.append('chunk_index', currentChunk);
+        formData.append('folder_token', folder_token);
+        formData.append('tot_file_size', tot_file_size);
+        formData.append('file_name', file_name);
+
+        fetch(url_link, {
+            method: 'POST',
+            headers: {
+                'X-access-token': accessToken
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+
+            currentChunk++;
+            console.log(currentChunk,'--',totalChunks)
+            if (currentChunk < totalChunks) {
+                const progress = (currentChunk / totalChunks) * 100;
+                document.getElementById('progressBar').style.width = `${progress}%`;
+                uploadChunk();
+            } else {
+                console.log('File upload completed.');
+                window.location.reload();
+
+            }
+        })
+        .catch(error => {
+            console.error('Error during chunk upload:', error);
+        });
+    }
+}
+
+    </script>
+   
+<!-- --------------------------------------------- Folders -------------------------------------------------------- -->
+      <div class="col-lg-12">
+          <div class="card card-block card-stretch card-transparent">
+              <div class="card-header d-flex justify-content-between pb-0">
+                  <div class="header-title">
+                      <h4 class="card-title">{{response_folder_data.folder_Data.0.folder_name}}</h4>
+                  </div>
+                 <!--  <div class="card-header-toolbar d-flex align-items-center">
+                      <div class="dropdown">
+                          <span class="dropdown-toggle dropdown-bg btn bg-white" id="dropdownMenuButton1"
+                              data-toggle="dropdown">
+                              Name<i class="ri-arrow-down-s-line ml-1"></i>
+                          </span>
+                          <div class="dropdown-menu dropdown-menu-right shadow-none"
+                              aria-labelledby="dropdownMenuButton1">
+                              <a class="dropdown-item" href="#">Last modified</a>
+                              <a class="dropdown-item" href="#">Last modifiedby me</a>
+                              <a class="dropdown-item" href="#">Last opened by me</a>
+                          </div>
+                      </div>
+                  </div> -->
+              </div>
+          </div>
+      </div>
+      
+      <script type="text/javascript">
+         // ---------------------------------------------- Property delete-----------------------------------------------------
+    function shared_folder(value,file_type) {
+      // Show the modal when the icon is clicked
+      if (file_type=='Protected'){
+              $("#shared_folder_" + value).modal('show');
+            }
+      else{
+        var form = document.getElementById("myForm_"+value);
+            var passwordInput = document.getElementById("passwordInput_" + value).value;
+            // Submit the form
+            form.submit();
+      }
+
+  }
+    // function folder_submitPassword(id,value) {
+    //     // Get the item ID from the modal data attribute
+    //     var folderID = id;
+    //     var password = document.getElementById('passwordInput_'+folderID).value;
+    //     var url_link = '/api/folder_view/';
+    //     var keyword = 'folder';
+    //     var data = {'password': password,
+    //                 'folder_token':value};
+
+    //     // Perform password validation
+    //     validate_folder_fun(folderID, data, url_link, keyword, function (isValidPassword, response) {
+    //         if (!isValidPassword) {
+    //             alert(response);
+    //         } else {
+    //             alert('Can"t Find a Folder!!');
+    //              $("#shared_folder_" + value).modal('hide');
+    //         }
+    //     });
+    // };
+    // // Function to validate the password
+    // function validate_folder_fun(folderID, data, url_link, keyword, callback,) {
+    //     var apiEndpoint = url_link;
+    //     var accessToken = "{{session}}";
+
+    //     $.ajax({
+    //         url: apiEndpoint,
+    //         type: 'POST',
+    //         headers: {
+    //             'X-access-token': accessToken
+    //         },
+    //         data: {
+    //             'folder_id': folderID,
+    //             'data' : JSON.stringify(data),
+    //         },
+    //         success: function (response) {
+              
+    //           if (keyword == 'folder')
+    //           {
+
+    //             if ('message' in response) {
+    //                 // $('#file_' +response.file_id).remove();
+                    
+    //                 callback(true,response);
+    //             } else {
+    //               console.log(response)
+    //                 console.log('Error: Invalid To Folder Id');
+    //                 callback(false, 'Invalid File');
+    //             }
+    //           }
+              
+    //         },
+    //         error: function (jqXHR,error) {
+    //             console.log('Error:', jqXHR.responseJSON);
+    //             callback(false,jqXHR.responseJSON.error || 'Contact Admin Support.');
+    //         }
+    //     });
+    //   }
+      </script>
+
+      
+                             <!-- --------------------------------------------------------------------------------------- -->
+      <div class="col-lg-8 col-xl-12"> 
+          <div class="card card-block card-stretch card-height files-table">                   
+              <div class="card-header d-flex justify-content-between">
+                  <div class="header-title">
+                      <h4 class="card-title">Files</h4>
+                  </div>
+                  <!-- <div class="card-header-toolbar d-flex align-items-center">
+                      <a href="./page-files.html" class=" view-more">View All</a>
+                  </div> -->
+              </div>
+              <div class="card-body pt-0">
+                  <div class="table-responsive">
+                      <table class="table mb-0 table-borderless tbl-server-info">
+                      <thead>
+                          <tr>
+                              <th scope="col">Name</th>
+                              <th scope="col">Members</th>
+                              <th scope="col">Date</th>
+                              <th scope="col">Size</th>
+                              <th scope="col">Expiry Date</th>
+                              {% comment %} <th scope="col">File Privacy</th> {% endcomment %}
+                              <!-- <th scope="col">View</th> -->
+                              <th scope="col">Download</th>
+                              {% comment %} <th scope="col">Share</th> {% endcomment %}
+                              <th scope="col">Delete</th>
+                              <!-- <th scope="col"></th> -->
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <style>
+                             .ltc {
+                                  max-width: 300px; /* Adjust the maximum width as needed */
+                                  overflow: hidden;
+                                  text-overflow: ellipsis;
+                                  white-space: nowrap;
+                                  display: inline-block;
+                                  position: relative;
+                              }
+                        </style>
+                        {% for i in response_folder_data.folder_Data %}
+                              <tr id="file_{{i.id}}">
+                                    <td id="file_name_{{i.id}}">
+                                        <div class="icon icon-grid i-grid ltc">
+                                            <div class="icon-small bg-primary rounded mr-3">
+                                                <i class="ri-file-download-line"></i>
+                                            </div>
+                                            {%if i.file_secure != 'Protected' %}
+                                              <a href="/api_download_files/?image_token={{i.access_token}}" title="{{ i.file_original_name }}">{{ i.file_original_name }}</a></td>
+                                            {% else %}
+                                              <a style="color:#8f93f6; cursor:pointer;" id="{{i.id}}" class="download-link" title="{{ i.file_original_name }}">{{ i.file_original_name }}</a>
+                                            {% endif %}
+                                        </div>
+
+                                    </td>
+                                    <td>{{i.shared_users}}</td>
+                                    <td>{{i.added_on}}</td>
+                                    <td>{{i.file_size|size_checker}}</td>
+                                    <td>{{i.expiry_date|format_utc_date}}</td>
+                                    {% comment %} {% if i.file_secure == 'Private' %}
+                                      <td  id="file_type_{{i.id}}"><i class="ri-user-fill" style="cursor:pointer;" id="file_security_{{i.id}}" file_sec_type='{{i.file_secure}}' onclick="security_change({{i.id}},'{{i.file_secure}}')" >{{i.file_secure}}</i></td>
+                                    {% elif i.file_secure == 'Protected' %}
+                                      <td  id="file_type_{{i.id}}"><i class="ri-admin-fill" style="cursor:pointer;" id="file_security_{{i.id}}" file_sec_type='{{i.file_secure}}' onclick="security_change({{i.id}},'{{i.file_secure}}')" >{{i.file_secure}}</i></td>
+                                    {% else %}
+                                      <td  id="file_type_{{i.id}}"><i class="ri-team-fill" style="cursor:pointer;" id="file_security_{{i.id}}" file_sec_type='{{i.file_secure}}' onclick="security_submitPassword({{i.id}},'{{i.file_secure}}')" >{{i.file_secure}}</i></td>
+                                    {% endif %} {% endcomment %}
+                                        {% comment %} <div class="modal" tabindex="-1" role="dialog" id="securityModal_{{i.id}}">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Enter Password</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="password" id="securityInput_{{i.id}}" class="form-control" placeholder="Password" value="">
+                                                    </div>
+                                                    <div class="modal-footer" id="file_sub_type_{{i.id}}">
+                                                        <button type="button" class="btn btn-primary" onclick="security_submitPassword({{i.id}},'{{i.file_secure}}')">Submit</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> {% endcomment %}
+                                    <!-- <td><i class="ri-eye-fill"></i></td> -->
+                                     <td id="download_file_{{i.id}}">
+                                    {%if i.file_secure == 'Protected' %}
+                                      <a style="color:#535f6b;; cursor:pointer;" id="{{i.id}}" class=""><i class="ri-file-lock-fill" onclick="download_link({{i.id}})">Download</a></i>
+                                    {% else %}
+                                      <a href="/api_download_files/?image_token={{i.access_token}}"><i class="ri-download-cloud-fill" style="color:#535f6b;">Download</a></i>
+                                    {% endif %}
+                                    </td> 
+                                    {% comment %} <div class="modal" tabindex="-1" role="dialog" id="passwordModal_{{i.id}}">
+                                      <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <h5 class="modal-title">Enter Password</h5>
+                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                      <span aria-hidden="true">&times;</span>
+                                                  </button>
+                                              </div>
+                                              <div class="modal-body">
+                                                  <input type="password" id="passwordInput_{{i.id}}" class="form-control" placeholder="Password" value="">
+                                              </div>
+                                              <div class="modal-footer">
+                                                  <button type="button" class="btn btn-primary" id="submitPassword_{{i.id}}" onclick="submitPassword({{i.id}})">Submit</button>
+                                              </div>
+                                          </div>
+                                      </div>
+                                    </div> {% endcomment %}
+                                    {% comment %} <td><i class="ri-user-shared-fill" style="cursor:pointer;" id="shareModal_{{i.id}}" onclick="shareModal({{i.id}})">Share</i></td> {% endcomment %}
+
+                                    <div class="modal" tabindex="-1" role="dialog" id="shareModals_{{i.id}}">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Enter Email ID</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <input type="text" id="emailInput_{{i.id}}" class="form-control col-7 ml-2" placeholder="Email ID" value="">
+                                                        <input type="password" id="sharepasswordInput_{{i.id}}" class="form-control col-3 ml-2" placeholder="password" value="">
+                                                        <button type="button" class="btn btn-primary ml-2" id="submit_shareduser_{{i.id}}" onclick="submit_shareduser({{i.id}})">Add</button>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer" id="shared_users_{{i.id}}" style="max-height: 500px; overflow-y: auto;">
+                                                  <!-- <button type="button" class="btn btn-primary" id="submit_shareduser">Submit</button> -->
+                                                  {% for k in response_shared_users%}
+                                                    {% for j in k %}
+                                                      {% if j.datahouse_id == i.id %}
+                                                        <div class="card-body" id="card_user_{{j.to_user_id}}">
+                                                          <div class="profile-header">
+                                                            <div class="cover-container text-center">
+                                                                <div class="cover-container">
+                                                                    <div class="row align-items-center">
+                                                                      <div class="col-lg-3">
+                                                                          <!-- Image on the left -->
+                                                                          <img class="rounded-circle profile-icon bg-primary d-block" src="/media/{{j.to_user_id__profile}}">
+                                                                      </div>
+                                                                      <div class="col-lg-6 text-center">
+                                                                          <!-- Name in the center -->
+                                                                          <p class="mt-2" style="margin-bottom: 0px;">{{j.to_user_id__first_name}}</p>
+                                                                          <p style="display: inline-block;">{{j.to_user_id__email_id}}</p>
+                                                                      </div>
+                                                                      <div class="col-lg-3">
+                                                                          <!-- Icon on the right -->
+                                                                          <span class="mt-3 float-right">
+                                                                            <!-- j.to_user_id__email_id -->
+                                                                              <i class="ri-delete-bin-fill" style="cursor:pointer;" onclick="delete_shared({{i.id}},'{{j.to_user_id}}')"></i>
+                                                                          </span>
+                                                                      </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      {% endif %}
+                                                    {% endfor %}
+                                                  {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <td><i class="ri-delete-bin-fill" style="cursor:pointer;" onclick="delete_property({{i.id}})">Delete</i></td>
+                                        <div class="modal" tabindex="-1" role="dialog" id="delete_passwordModal_{{i.id}}">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Enter Password</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="password" id="delete_passwordInput_{{i.id}}" class="form-control" placeholder="Password" value="">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-primary" onclick="file_submitPassword({{i.id}})">Submit</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <!-- <td>
+                                        <div class="dropdown">
+                                            <span class="dropdown-toggle" id="dropdownMenuButton6" data-toggle="dropdown">
+                                                <i class="ri-more-fill"></i>
+                                            </span>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton6">
+                                                <a class="dropdown-item" href="#"><i class="ri-eye-fill mr-2"></i>View</a>
+                                                <a class="dropdown-item" href="#"><i class="ri-delete-bin-6-fill mr-2"></i>Delete</a>
+                                                <a class="dropdown-item" href="#"><i class="ri-pencil-fill mr-2"></i>Share</a>
+                                                <a class="dropdown-item" href="#"><i class="ri-file-download-fill mr-2"></i>Download</a>
+                                            </div>
+                                        </div>
+                                    </td> -->
+                                </tr>
+                        {% endfor %}
+                          </script>
+
+                      </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <style type="text/css">
+    /* Style for the popup */
+    #popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+  </style>
+      {%if response_data is not None %}
+        <div id="popup">This is a popup message!</div>
+      {% endif %}
+  <script>
+    function showPopup(message) {
+      var popup = document.getElementById("popup");
+      popup.textContent = message;
+      popup.style.display = "block";
+
+      // Close the popup after 3 seconds
+      setTimeout(function() {
+        popup.style.display = "none";
+      }, 10000);
+    }
+
+
+    function copyLink(file_id) {
+      /* Get the text field */
+      var currentUrl = window.location.href;
+      // Create a URL object
+      var urlObject = new URL(currentUrl);
+
+      // Get the base URL
+      var copyText = urlObject.protocol + "//" + urlObject.host + "/datahouse_download/" + file_id;
+      
+      // Create a temporary input element to copy the text to clipboard
+      var tempInput = document.createElement("input");
+      tempInput.value = copyText;
+      document.body.appendChild(tempInput);
+
+      /* Select the text field */
+      tempInput.select();
+      tempInput.setSelectionRange(0, 99999); /* For mobile devices */
+
+      /* Copy the text inside the text field */
+      document.execCommand("copy");
+
+      // Remove the temporary input element
+      document.body.removeChild(tempInput);
+
+      /* Alert the copied text */
+      var alertMessage = "Link copied: " + copyText;
+      alert(alertMessage)
+      // showPopup(alertMessage);
+      
+    }
+
+
+  </script>
+
+      <div class="col-lg-6">
+          <div class="card card-block card-stretch card-height  plan-bg">
+              <div class="card-body">
+                  <h4 class="mb-3 text-white">Unlock Your plan</h4>    
+                  <p>Expanded Storage, Access To<br> More Features On CloudBOX</p>   
+                  <div class="row align-items-center justify-content-between">
+                     <div class="col-6 go-white ">
+                      <a href="#" class="btn d-inline-block mt-5">Go Premium</a>
+                     </div>
+                      <div class="col-6">
+                          <img src="/static/assets/images/layouts/mydrive/lock-bg.png" class="img-fluid" alt="image1">
+                      </div>
+                  </div>                     
+              </div>
+          </div>
+      </div>
+      <div class="col-lg-6">
+          <div class="card card-block card-stretch card-height ">
+              <div class="card-header d-flex justify-content-between">
+                  <div class="header-title">
+                      <h4 class="card-title">Statistic</h4>
+                  </div>
+              </div>
+              <div class="card-body">
+                  <div id="layout-1-chart" style="min-height: 220px;"></div>
+                  <div class="row mt-4">
+                      <div class="col-lg-6 col-md-6 col-6">
+                          <div class="media align-items-center">
+                              <div class="icon iq-icon-box bg-primary rounded icon-statistic">
+                                  <i class="las la-long-arrow-alt-down"></i>
+                              </div>
+                              <div class="media-body ml-3">
+                                  <p class="mb-0">Downloads</p>
+                                  <h5>12,594</h5>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-lg-6 col-md-6 col-6">
+                          <div class="media align-items-center">
+                              <div class="icon iq-icon-box bg-light rounded icon-statistic">
+                                  <i class="las la-long-arrow-alt-up"></i>
+                              </div>
+                              <div class="media-body ml-3">
+                                  <p class="mb-0">Uploads</p>
+                                  <h5>1,458</h5>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+<script>
+// ------------------------------------------------- Security Change --------------------------------------------------
+  function security_change(value,file_type) {
+    // Show the modal when the icon is clicked
+      $("#securityModal_" + value).modal('show');
+  }
+  function security_submitPassword(value,file_type) {
+        // Get the entered email
+    // alert(value)
+        var security = $("#securityInput_" + value).val();
+
+        // Get the item ID from the modal data attribute
+        var itemId = value;
+
+        var url_link = '/api/data_house/';
+        var keyword = 'security';
+        var data = {'file_id': itemId,
+                    'file_type':file_type,
+                    'file_key':1,
+                    'password':security};
+
+        // Perform password validation
+        validatesecurityfile(itemId, data, url_link, keyword, function (isValidPassword, errorMessage) {
+            if (!isValidPassword) {
+                $("#securityInput_" + value).val("");
+                alert(errorMessage);
+            } else {
+                // Clear the email input
+                $("#securityInput_" + value).val("");
+                $("#securityModal_" + value).modal('hide');
+            }
+        });
+    };
+     // Function to validate the password
+    function validatesecurityfile(itemId, data, url_link, keyword, callback,) {
+        var apiEndpoint = url_link;
+        var accessToken = "{{session}}";
+
+        $.ajax({
+            url: apiEndpoint,
+            type: 'PUT',
+            headers: {
+                'X-access-token': accessToken
+            },
+            data: {
+                'file_id': itemId,
+                'data' : JSON.stringify(data),
+            },
+            success: function (response) {
+              
+              if (keyword == 'security')
+              {
+                console.log(data)
+
+                if ('message' in response) {
+                  if (response.new_file_type == 'Protected'){
+                      var click_method = 'security_change'
+                      var iframe='ri-admin-fill'
+
+
+                      document.getElementById('file_name_'+response.file_id).innerHTML=`
+                      <div class="icon icon-grid i-grid ltc">
+                          <div class="icon-small bg-primary rounded mr-3">
+                              <i class="ri-file-download-line"></i>
+                          </div>
+                          <a style="color:#8f93f6; cursor:pointer;" id="${response.file_id}" title="${response.file_original_name}" onclick="download_link(${response.file_id})">${response.file_original_name}</a>
+                      </div>`;
+
+                      document.getElementById('download_file_'+response.file_id).innerHTML=`<a style="color:#535f6b;; cursor:pointer;" id="${response.file_id}" ><i class="ri-file-lock-fill" onclick="download_link(${response.file_id})"> Download</a></i>`;
+                  }
+                  else if (response.new_file_type == 'Public'){
+                    var click_method = 'security_submitPassword'
+                      var iframe='ri-team-fill'
+
+                      document.getElementById('file_name_'+response.file_id).innerHTML=`
+                      <div class="icon icon-grid i-grid ltc">
+                          <div class="icon-small bg-primary rounded mr-3">
+                              <i class="ri-file-download-line"></i>
+                          </div>
+                          <a href="/api_download_files/?image_token=${response.access_token}"  title="${response.file_original_name}">${response.file_original_name}</a>
+
+                          </td>
+                      </div>`;
+                      
+                    document.getElementById('download_file_'+response.file_id).innerHTML=`<a <a href="/api_download_files/?image_token=${response.access_token}" ><i class="ri-download-cloud-fill" style="color:#535f6b;">Download</a></i>`;
+                  }
+                    else
+                    {
+                      var click_method = 'security_change'
+                      var iframe='ri-user-fill'
+                    }
+                    console.log(response)
+                    new_modal=`<i class="${iframe}" id="file_security_${response.file_id}" file_sec_type='${response.new_file_type}' style="cursor:pointer;" onclick="${click_method}(${response.file_id},'${response.new_file_type}')" >${response.new_file_type}</i>`
+
+                    document.getElementById('file_type_'+response.file_id).innerHTML=new_modal;
+                    document.getElementById('file_sub_type_'+response.file_id).innerHTML=`<button type="button" class="btn btn-primary" onclick="security_submitPassword(${response.file_id},'${response.new_file_type}')">Submit</button>`;
+                    callback(true,response);
+                } else {
+                  console.log(response)
+                    console.log('Error: Invalid To File Id');
+                    callback(false, 'Invalid File');
+                }
+              }
+              
+            },
+            error: function (jqXHR,error) {
+                console.log('Error:', jqXHR.responseJSON);
+                callback(false,jqXHR.responseJSON.error || 'Contact Admin Support.');
+            }
+        });
+    }
+  // ---------------------------------------------- Share Property -----------------------------------------------------
+   function shareModal(value) {
+        // Show the modal when the icon is clicked
+        console.log(value)
+        
+        var file_security_type = $("#file_security_" + value);
+        var fileSecType = file_security_type.attr('file_sec_type');
+        // Now you have the value of file_sec_type
+        console.log('file_sec_type:', fileSecType);
+
+        if (fileSecType == 'Protected') {
+            alert('Unlock file from protected state!!')
+        }
+        else
+        {
+          $("#shareModals_" + value).modal('show');
+        }
+    }
+
+   function submit_shareduser(value) {
+        // Get the entered email
+        var email_id = $("#emailInput_" + value).val();
+        var password = $("#sharepasswordInput_" + value).val();
+
+        // Get the item ID from the modal data attribute
+        var itemId = value;
+
+        var url_link = '/api/get_shared_file/';
+        var keyword = 'share';
+        var data = {'email_id': email_id,
+                    'password':password,
+                  'file_key':1
+                };
+
+        // Perform password validation
+        validatePassword(itemId, data, url_link, keyword, function (isValidPassword, errorMessage) {
+            if (!isValidPassword) {
+                alert(errorMessage);
+            } else {
+                // Clear the email input
+                $("#emailInput_" + value).val("");
+                $("#passwordInput_" + value).val("");
+                // Optionally, you can close the modal after handling the input
+                // $("#shareModals_" + value).modal('hide');
+            }
+        });
+    };
+
+    // ---------------------------------------------- Property delete-----------------------------------------------------
+    function delete_property(value) {
+      // Show the modal when the icon is clicked
+      $("#delete_passwordModal_" + value).modal('show');
+  }
+    function file_submitPassword(value) {
+        // Get the item ID from the modal data attribute
+        var itemId = value;
+        var password = document.getElementById('delete_passwordInput_'+value).value;
+        var url_link = '/api/delete_file/';
+        var keyword = 'delete_file';
+        var data = {'password': password,
+                    'file_key':0,
+                    };
+
+        // Perform password validation
+        validate_delete_file_fun(itemId, data, url_link, keyword, function (isValidPassword, response) {
+            if (!isValidPassword) {
+                alert(response);
+            } else {
+                alert('File Deleted!!');
+                 $("#delete_passwordModal_" + value).modal('hide');
+            }
+        });
+    };
+    // Function to validate the password
+    function validate_delete_file_fun(itemId, data, url_link, keyword, callback,) {
+        var apiEndpoint = url_link;
+        var accessToken = "{{session}}";
+
+        $.ajax({
+            url: apiEndpoint,
+            type: 'DELETE',
+            headers: {
+                'X-access-token': accessToken
+            },
+            data: {
+                'file_id': itemId,
+                'data' : JSON.stringify(data),
+            },
+            success: function (response) {
+              
+              if (keyword == 'delete_file')
+              {
+
+                if ('message' in response) {
+                    $('#file_' +response.file_id).remove();
+                    
+                    callback(true,response);
+                } else {
+                  console.log(response)
+                    console.log('Error: Invalid To File Id');
+                    callback(false, 'Invalid File');
+                }
+              }
+              
+            },
+            error: function (jqXHR,error) {
+                console.log('Error:', jqXHR.responseJSON);
+                callback(false,jqXHR.responseJSON.error || 'Contact Admin Support.');
+            }
+        });
+    }
+    // ---------------------------------------------- Share Property delete-----------------------------------------------------
+    function delete_shared(value,to_user_id) {
+        // Get the entered email
+        var to_user_id = to_user_id
+
+        // Get the item ID from the modal data attribute
+        var itemId = value;
+
+        var url_link = '/api/get_shared_file/';
+        var keyword = 'delete_share';
+        var data = {'to_user_id': to_user_id};
+
+        // Perform password validation
+        validate_delete_fun(itemId, data, url_link, keyword, function (isValidPassword, errorMessage) {
+            if (!isValidPassword) {
+                alert(errorMessage);
+            } else {
+                alert('User Removed!!');
+            }
+        });
+    };
+    // Function to validate the password
+    function validate_delete_fun(itemId, data, url_link, keyword, callback,) {
+        var apiEndpoint = url_link;
+        var accessToken = "{{session}}";
+
+        $.ajax({
+            url: apiEndpoint,
+            type: 'DELETE',
+            headers: {
+                'X-access-token': accessToken
+            },
+            data: {
+                'file_id': itemId,
+                'data': JSON.stringify(data)
+            },
+            success: function (response) {
+              
+              if (keyword == 'delete_share')
+              {
+
+                if ('message' in response) {
+                    $('#card_user_'+response.to_user_id).empty();;
+                    
+                    callback(true,response);
+                } else {
+                  console.log(response)
+                    console.log('Error: Invalid To user Id',response);
+                    callback(false, 'Invalid Email Id');
+                }
+              }
+              
+            },
+            error: function (jqXHR,error) {
+                console.log('Error:', jqXHR.responseJSON);
+                callback(false,jqXHR.responseJSON.error || 'Contact Admin Support.');
+            }
+        });
+    }
+    // --------------------------------------------------- Password Property -----------------------------------------------
+    function download_link(value) {
+      // Show the modal when the icon is clicked
+      $("#passwordModal_" + value).modal('show');
+  }
+
+    function submitPassword(value) {
+        var itemId=value;
+        // Get the entered password
+        var password = document.getElementById('passwordInput_'+itemId).value;
+
+        // Get the item ID from the modal data attribute
+        var itemId = value;
+        var url_link='/api/get_secured_file/'
+        var keyword='download'
+        var data= {'password':password,
+                  'file_key':1}
+        // Perform password validation
+        validatePassword(itemId, data,url_link,keyword, function (isValidPassword, errorMessage) {
+            if (!isValidPassword) {
+                document.getElementById('passwordInput_'+itemId).value=""
+                alert(errorMessage);
+            }
+            else
+            {
+              document.getElementById('passwordInput_'+itemId).value=""
+              $('#passwordModal_'+itemId).modal('hide');
+            }
+        });
+    };
+
+    
+    // Function to validate the password
+    function validatePassword(itemId, data, url_link, keyword, callback,) {
+        var apiEndpoint = url_link;
+        var accessToken = "{{session}}";
+
+        $.ajax({
+            url: apiEndpoint,
+            type: 'POST',
+            headers: {
+                'X-access-token': accessToken
+            },
+            data: {
+                'file_id': itemId,
+                'data': JSON.stringify(data)
+            },
+            success: function (response) {
+
+              if (keyword == 'download')
+              {
+
+                if ('file_name' in response && 'save_name' in response) {
+                    // Construct the download URL using the received file details
+                    var downloadUrl = `/api_download_files/?image_token=${response.access_token}`
+
+                    // Trigger the file download
+                    window.location.href = downloadUrl;
+                    callback(true);
+                } else {
+                  console.log(response)
+                    console.log('Error: Invalid file password');
+                    callback(false, 'Invalid file password');
+                }
+              }
+              else if (keyword == 'share')
+              {
+                console.log(response)
+                if ('profile_image' in response && 'name' in response && 'email_id' in response && 'to_user_id' in response) {
+                    // Construct the download URL using the received file details
+                    var newModelContent = `<div class="card-body" id="card_user_${response.to_user_id}" >
+                                                <div class="profile-header">
+                                                  <div class="cover-container text-center">
+                                                      <div class="cover-container">
+                                                          <div class="row align-items-center">
+                                                            <div class="col-lg-3">
+                                                                <!-- Image on the left -->
+                                                                <img class="rounded-circle profile-icon bg-primary d-block" src="/media/${response.profile_image}">
+                                                            </div>
+                                                            <div class="col-lg-6 text-center">
+                                                                <!-- Name in the center -->
+                                                                <p class="mt-2" style="margin-bottom: 0px;">${response.name}</p>
+                                                                <p style="display: inline-block;">${response.email_id}</p>
+                                                            </div>
+                                                            <div class="col-lg-3">
+                                                              <span class="mt-3 float-right">
+                                                                      <!-- j.to_user_id__email_id -->
+                                                                        <i class="ri-delete-bin-fill" style="cursor:pointer;" onclick="delete_shared(${itemId},'${response.to_user_id}')"></i>
+                                                                    </span>
+                                                            </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                                </div>
+                                              </div>`
+                    $("#shared_users_"+itemId).append(newModelContent);
+                    // Trigger the file download
+                    callback(true);
+                } else {
+                    console.log('Error: Invalid response format');
+                    callback(false,jqXHR.responseJSON.error || 'Contact Admin Support.');
+                }
+              }
+            },
+            error: function (jqXHR,error) {
+                console.log('Error:', jqXHR.responseJSON);
+                callback(false,jqXHR.responseJSON.error || 'Contact Admin Support.');
+            }
+        });
+    }
+    // --------------------------------------------------------------------------------------------------------------------
+
+</script>
+
+{% endblock %}

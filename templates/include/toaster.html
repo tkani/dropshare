@@ -1,0 +1,22 @@
+<script>
+        // Function to show and hide messages
+        function showMessage(message, messageType) {
+            var messageContainer = document.getElementById('message-container');
+            messageContainer.textContent = message;
+            messageContainer.style.backgroundColor = messageType === 'success' ? '#4CAF50' : '#f44336'; // Adjust colors based on message type
+            messageContainer.style.display = 'block';
+
+            // Hide the message after 30 seconds
+            setTimeout(function() {
+                messageContainer.style.display = 'none';
+            }, 30000);
+        }
+
+        // Example usage
+        {% if messages %}
+            {% for message in messages %}
+                // Assuming 'message_tags' is the tag attribute of the message
+                showMessage("{{ message }}", "{{ message.tags }}");
+            {% endfor %}
+        {% endif %}
+    </script>
